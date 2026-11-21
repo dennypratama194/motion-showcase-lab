@@ -10,6 +10,7 @@ import { duration, fps, viewport } from '../remotion/format.mjs';
 
 const url = process.env.ATELIER_URL || 'http://localhost:3000';
 const output = resolve(process.env.ATELIER_OUTPUT || 'artifacts');
+const coverSeconds = 0.5;
 const browserExecutable = process.env.CHROMIUM_PATH || chromium.executablePath();
 
 async function captureCover(browser, publicDir) {
@@ -19,8 +20,8 @@ async function captureCover(browser, publicDir) {
     await page.locator('.hero-image').evaluate((image) => image.decode());
     await page.getByRole('button', { name: 'Projects' }).hover();
     const menu = page.getByRole('navigation', { name: 'Project index' });
-    await menu.getByRole('button', { name: /Pine Residence/ }).hover();
-    await menu.getByRole('img', { name: /forest/ }).evaluate((image) => image.decode());
+    await menu.getByRole('button', { name: /The Still House/ }).hover();
+    await menu.getByRole('img', { name: /sandstone museum/ }).evaluate((image) => image.decode());
     await page.screenshot({ path: join(publicDir, 'cover.png') });
   } finally {
     await page.close();
@@ -60,13 +61,17 @@ async function captureMotion(browser) {
     await page.goto(url, { waitUntil: 'domcontentloaded' });
 
     let pointer = { x: 945, y: 38 };
-    async function glide(x, y) {
+    async function glide(x, y, duration = 390) {
       const from = pointer;
-      for (let step = 1; step <= 12; step++) {
-        const fraction = step / 12;
-        await page.mouse.move(from.x + (x - from.x) * fraction, from.y + (y - from.y) * fraction);
-        await delay(14);
-      }
+      const started = performance.now();
+      let progress;
+      do {
+        progress = Math.min(1, (performance.now() - started) / duration);
+        const eased = progress * progress * (3 - 2 * progress);
+        const arc = Math.sin(eased * Math.PI) * 12;
+        await page.mouse.move(from.x + (x - from.x) * eased, from.y + (y - from.y) * eased - arc);
+        if (progress < 1) await delay(12);
+      } while (progress < 1);
       pointer = { x, y };
     }
 
@@ -78,23 +83,23 @@ async function captureMotion(browser) {
 
     const trigger = page.getByRole('button', { name: 'Projects' });
     const menu = page.getByRole('navigation', { name: 'Project index' });
-    await at(2.65);
+    await at(2.75);
     await page.mouse.move(pointer.x, pointer.y);
     await hover(trigger);
-    await at(3.85);
-    await hover(menu.getByRole('button', { name: /Pine Residence/ }));
-    await menu.getByRole('img', { name: /forest/ }).waitFor();
+    await at(3.95);
+    await hover(menu.getByRole('button', { name: /The Still House/ }));
+    await menu.getByRole('img', { name: /sandstone museum/ }).waitFor();
     await at(5.05);
     await hover(menu.getByRole('button', { name: /Limestone Chapel/ }));
     await menu.getByRole('img', { name: /chapel/ }).waitFor();
     await at(6.4);
     await glide(260, 410);
     await menu.waitFor({ state: 'hidden' });
-    await at(7.8);
+    await at(duration - coverSeconds);
     await session.send('Page.stopScreencast');
 
     const startSeconds = start / 1000;
-    const captured = frames.filter(({ time }) => time >= startSeconds && time < startSeconds + duration);
+    const captured = frames.filter(({ time }) => time >= startSeconds && time < startSeconds + duration - coverSeconds);
     if (captured.length < 30) throw new Error(`Only ${captured.length} motion frames were captured`);
     return captured;
   } finally {
@@ -109,7 +114,9 @@ async function renderReel(captured, temporary, publicDir) {
 
   let index = 0;
   const frames = Array.from({ length: duration * fps }, (_, frame) => {
-    const time = captured[0].time + frame / fps;
+    const seconds = frame / fps;
+    if (seconds < coverSeconds) return 'cover.png';
+    const time = captured[0].time + seconds - coverSeconds;
     while (index + 1 < captured.length && captured[index + 1].time <= time) index++;
     return `frame-${index}.jpg`;
   });

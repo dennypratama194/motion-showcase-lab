@@ -32,10 +32,10 @@ test('reveals the hero, previews a project on hover and closes the index', async
   await index.hover();
   const nav = page.getByRole('navigation', { name: 'Project index' });
   await expect(nav).toBeVisible();
-  await nav.getByRole('button', { name: /Pine Residence/ }).hover();
+  await nav.getByRole('button', { name: /The Still House/ }).hover();
   await expect(index).toHaveAttribute('aria-expanded', 'true');
-  await expect(nav.getByRole('img')).toHaveAccessibleName('A dark concrete residence at the edge of a pine forest');
-  await expect(nav.getByText('Oslo, Norway')).toBeVisible();
+  await expect(nav.getByRole('img')).toHaveAccessibleName('Layered sandstone museum in a desert courtyard');
+  await expect(nav.getByText('AlUla, Saudi Arabia')).toBeVisible();
   await page.mouse.move(4, 200);
   await expect(page.locator('#project-index')).toBeHidden();
   await index.hover();
@@ -43,7 +43,7 @@ test('reveals the hero, previews a project on hover and closes the index', async
   await page.locator('.menu-backdrop').click({ position: { x: 4, y: 30 } });
   await expect(page.locator('#project-index')).toBeHidden();
   await expect(index).toHaveAttribute('aria-expanded', 'false');
-  await expect(hero.getByRole('link', { name: 'The Still House', exact: true })).toBeVisible();
+  await expect(hero.getByRole('link', { name: 'Pine Residence', exact: true })).toBeVisible();
   expect(errors).toEqual([]);
 });
 
@@ -55,15 +55,15 @@ test('supports keyboard navigation, returning focus on Escape and selecting a pr
   const index = page.getByRole('button', { name: 'Projects' });
   await expect(index).toBeFocused();
   await page.keyboard.press('Enter');
-  await expect(page.getByRole('button', { name: /The Still House/ })).toBeFocused();
-  await page.keyboard.press('Tab');
   await expect(page.getByRole('button', { name: /Pine Residence/ })).toBeFocused();
+  await page.keyboard.press('Tab');
+  await expect(page.getByRole('button', { name: /The Still House/ })).toBeFocused();
   await page.keyboard.press('Escape');
   await expect(index).toBeFocused();
   await page.keyboard.press('Enter');
   await page.keyboard.press('Tab');
   await page.keyboard.press('Enter');
-  await expect(page.getByRole('heading', { name: 'Pine Residence' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'The Still House' })).toBeVisible();
   await expect(page.getByRole('region', { name: 'Featured project' })).toBeFocused();
 });
 
@@ -84,7 +84,7 @@ test('fits a narrow touch viewport and cycles projects', async ({ browser }) => 
     await nav.getByRole('button', { name: /The Desert Court/ }).tap();
     await expect(page.getByRole('heading', { name: 'The Desert Court' })).toBeVisible();
     await page.getByRole('button', { name: 'Next project' }).tap();
-    await expect(page.getByRole('heading', { name: 'The Still House', exact: true })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Pine Residence', exact: true })).toBeVisible();
     await page.getByRole('button', { name: 'Previous project' }).tap();
     await expect(page.getByRole('heading', { name: 'The Desert Court' })).toBeVisible();
   } finally {

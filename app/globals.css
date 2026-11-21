@@ -54,7 +54,7 @@ h1 { margin: 16px 0 0; font: 400 clamp(50px, 7.85vw, 113px)/.9 var(--font-displa
 .caption-arrows button { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid #ffffff80; transition: background .2s, color .2s; }
 .site-header { --header-height: 80px; }
 .menu-backdrop { position: absolute; inset: 100% 0 auto; height: calc(100dvh - var(--header-height)); background: #19140f0d; opacity: 0; }
-.project-index { position: absolute; inset: calc(100% + 8px) 0 auto; width: min(calc(100% - 2 * var(--frame)), 720px); max-height: calc(100dvh - var(--header-height) - 16px); overflow: auto; overscroll-behavior: contain; background: #27251f; color: var(--paper); border-radius: 14px; box-shadow: 0 12px 28px #19140f45; opacity: 0; transform: translateY(-6px); }
+.project-index { position: absolute; inset: calc(100% + 8px) 0 auto; width: min(calc(100% - 2 * var(--frame)), 720px); max-height: calc(100dvh - var(--header-height) - 16px); overflow: auto; overscroll-behavior: contain; background: #27251f; color: var(--paper); border-radius: 14px; box-shadow: 0 12px 28px #19140f45; opacity: 0; transform: translateY(-9px); }
 @supports (backdrop-filter: blur(12px)) {
   .project-index {
     background: rgb(31 26 21 / .72);
@@ -121,12 +121,12 @@ h1 { margin: 16px 0 0; font: 400 clamp(50px, 7.85vw, 113px)/.9 var(--font-displa
     --curtain-delay: 120ms;
     --curtain-duration: 1s;
     --header-start: calc(var(--curtain-delay) + var(--curtain-duration) + 32ms);
-    --header-duration: 260ms;
+    --header-duration: 420ms;
     --text-start: calc(var(--header-start) + var(--header-duration) + 32ms);
   }
   .hero-mask { animation: image-reveal var(--curtain-duration) cubic-bezier(.22, 1, .36, 1) var(--curtain-delay) backwards; }
   .hero-image { animation: image-settle var(--curtain-duration) cubic-bezier(.22, 1, .36, 1) var(--curtain-delay) backwards; }
-  .header-inner { animation: header-reveal var(--header-duration) cubic-bezier(.22, 1, .36, 1) var(--header-start) backwards; }
+  .header-inner { animation: header-reveal var(--header-duration) cubic-bezier(.4, 0, .2, 1) var(--header-start) backwards; }
   .hero-word { animation: word-rise 680ms cubic-bezier(.22, 1, .36, 1) calc(var(--text-start) + var(--word-delay, 0ms)) backwards; }
   .headline-line:first-child .word-mask:nth-child(2) { --word-delay: 55ms; }
   .headline-line:nth-child(2) .word-mask:nth-child(1) { --word-delay: 110ms; }

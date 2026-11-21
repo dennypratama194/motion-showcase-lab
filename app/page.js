@@ -5,8 +5,8 @@ import { ArrowLeft, ArrowRight, ArrowUpRight, ChevronDown } from 'lucide-react';
 import gsap from 'gsap';
 
 const projects = [
-  { name: 'The Still House', summary: 'A sandstone museum carved by shadow.', type: 'Cultural', place: 'AlUla, Saudi Arabia', year: '2024', image: '/images/still-house.webp', alt: 'Layered sandstone museum in a desert courtyard', text: 'A low sandstone museum set into the desert, with deep recesses that offer shade as visitors move between the galleries and the courtyard.' },
   { name: 'Pine Residence', summary: 'A low concrete home at the forest edge.', type: 'Residential', place: 'Oslo, Norway', year: '2023', image: '/images/pine-residence.webp', alt: 'A dark concrete residence at the edge of a pine forest', text: 'A low concrete residence set among the pines. The broad roof shelters the living spaces while the glazed walls open them to the forest.' },
+  { name: 'The Still House', summary: 'A sandstone museum carved by shadow.', type: 'Cultural', place: 'AlUla, Saudi Arabia', year: '2024', image: '/images/still-house.webp', alt: 'Layered sandstone museum in a desert courtyard', text: 'A low sandstone museum set into the desert, with deep recesses that offer shade as visitors move between the galleries and the courtyard.' },
   { name: 'The Limestone Chapel', summary: 'A quiet chapel shaped by a single shaft of light.', type: 'Cultural', place: 'Puglia, Italy', year: '2022', image: '/images/limestone-chapel.webp', alt: 'A pale limestone chapel in open Mediterranean terrain', text: 'A narrow opening in the limestone wall admits a shaft of daylight that moves slowly across the chapel floor.' },
   { name: 'The Desert Court', summary: 'An open-air court sheltered by sandstone walls.', type: 'Public space', place: 'AlUla, Saudi Arabia', year: '2024', image: '/images/still-house.webp', alt: 'An open courtyard in front of the layered sandstone museum', text: 'Part of the same AlUla site as The Still House, the court creates a sheltered place to pause between the museum and the desert.' },
 ];
@@ -38,12 +38,12 @@ export default function Home() {
     });
     animation.to(panel.current, {
       opacity: open ? 1 : 0,
-      y: open ? 0 : -6,
-      duration: reduced ? 0 : open ? 0.22 : 0.16,
-      ease: open ? 'power3.out' : 'power2.in',
+      y: open ? 0 : -9,
+      duration: reduced ? 0 : open ? 0.38 : 0.24,
+      ease: open ? 'power2.inOut' : 'power1.inOut',
     }, 0).to(backdrop.current, {
       opacity: open ? 1 : 0,
-      duration: reduced ? 0 : 0.16,
+      duration: reduced ? 0 : 0.24,
       ease: 'power2.out',
     }, 0);
     if (reduced) animation.progress(1);

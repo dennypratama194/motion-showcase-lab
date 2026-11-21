@@ -31,4 +31,4 @@ Install Chromium with `npx playwright install chromium` or set `CHROMIUM_PATH` t
 npm run capture
 ```
 
-Playwright captures the live page from its first load through the hero reveal, index opening, two preview hovers, and index closing. Remotion places the 1440 × 900 browser capture inside a 1600 × 1200 canvas and renders an eight-second H.264 MP4 and a matching PNG cover to `artifacts/`. Set `ATELIER_URL`, `ATELIER_OUTPUT`, or `CHROMIUM_PATH` to override the server URL, output directory, or Chromium executable.
+Playwright captures the live page from its first load through the hero reveal, index opening, two preview hovers, and index closing. Remotion places the 1440 × 900 browser capture inside a 1600 × 1200 canvas and renders an eight-second H.264 MP4 with a half-second opening cover hold and a matching PNG to `artifacts/`. Set `ATELIER_URL`, `ATELIER_OUTPUT`, or `CHROMIUM_PATH` to override the server URL, output directory, or Chromium executable.
