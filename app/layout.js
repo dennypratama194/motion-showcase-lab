@@ -4,7 +4,7 @@ import '@fontsource/instrument-serif/latin-400-italic.css';
 import './globals.css';
 
 export const metadata = {
-  title: 'ATELIER® — Independent Architecture Practice',
+  title: 'ATELIER — Independent Architecture Practice',
   description: 'An independent architecture practice exploring the quiet intersection of form, material, and place.',
 };
 

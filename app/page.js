@@ -124,12 +124,13 @@ export default function Home() {
     <div>
       <header className="site-header">
         <div className="frame header-inner">
-          <a className="brand" href="#" aria-label="Atelier home" onClick={() => { setOpen(false); setSelected(0); }}>ATELIER<sup>®</sup></a>
+          <a className="brand" href="#" aria-label="Atelier home" onClick={() => { setOpen(false); setSelected(0); }}><img src="/atelier-wordmark.svg" width="152" height="30" alt="" /></a>
           <nav className="header-menu" aria-label="Main navigation">
             <button className="index-button" ref={toggle} aria-expanded={open} aria-controls="project-index" onPointerEnter={enterTrigger} onPointerLeave={leaveMenu} onClick={toggleProjects}>
               <span>Projects</span>
               <ChevronDown size={14} aria-hidden="true" />
             </button>
+            <a href="#practice" onClick={() => setOpen(false)}>Practice</a>
             <a href="#studio" onClick={() => setOpen(false)}>Studio</a>
           </nav>
           <a className="header-cta" href="#project-detail" onClick={() => setOpen(false)}><span>View project</span><ArrowUpRight size={15} aria-hidden="true" /></a>
@@ -184,12 +185,19 @@ export default function Home() {
           <p className="micro"><span className="marker" /> {active.type} / {active.year}</p>
           <div><h2>{active.name}</h2><p>{active.text}</p></div>
         </section>
+        <section id="practice" tabIndex={-1} className="frame detail-section">
+          <p className="micro"><span className="marker" /> Practice</p>
+          <div>
+            <h2>How we work</h2>
+            <p>We begin by studying the site: where the light falls, how people move through it, and which materials belong there. Sketches, models, and material samples help us test each idea before it becomes a building.</p>
+          </div>
+        </section>
         <section id="studio" tabIndex={-1} className="frame detail-section">
           <p className="micro"><span className="marker" /> The Studio</p>
-          <div><h2>ATELIER®</h2><p>We design buildings around the ways people experience light, material, and landscape.</p></div>
+          <div><h2>ATELIER</h2><p>We design buildings around the ways people experience light, material, and landscape.</p></div>
         </section>
       </main>
-      <footer className="frame site-footer micro"><span>ATELIER® Architecture Practice</span><a href="#">Back to top ↑</a></footer>
+      <footer className="frame site-footer micro"><span>ATELIER Architecture Practice</span><a href="#">Back to top ↑</a></footer>
     </div>
   );
 }

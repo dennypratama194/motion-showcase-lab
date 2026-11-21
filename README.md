@@ -1,4 +1,4 @@
-# ATELIER®
+# ATELIER
 
 An editorial architecture portfolio concept built with Next.js, Tailwind CSS, and GSAP. The four projects are fictional and use original generated architectural imagery.
 
