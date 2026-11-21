@@ -5,9 +5,10 @@ import { ArrowLeft, ArrowRight, ArrowUpRight, ChevronDown } from 'lucide-react';
 import gsap from 'gsap';
 
 const projects = [
-  { name: 'The Still House', type: 'Cultural', place: 'AlUla, Saudi Arabia', year: '2024', image: '/images/still-house.webp', alt: 'Layered sandstone museum in a desert courtyard', text: 'A low sandstone museum set into the desert, with deep recesses that offer shade as visitors move between the galleries and the courtyard.' },
-  { name: 'Pine Residence', type: 'Residential', place: 'Oslo, Norway', year: '2023', image: '/images/pine-residence.webp', alt: 'A dark concrete residence at the edge of a pine forest', text: 'A low concrete residence set among the pines. The broad roof shelters the living spaces while the glazed walls open them to the forest.' },
-  { name: 'The Limestone Chapel', type: 'Cultural', place: 'Puglia, Italy', year: '2022', image: '/images/limestone-chapel.webp', alt: 'A pale limestone chapel in open Mediterranean terrain', text: 'A narrow opening in the limestone wall admits a shaft of daylight that moves slowly across the chapel floor.' },
+  { name: 'The Still House', summary: 'A sandstone museum carved by shadow.', type: 'Cultural', place: 'AlUla, Saudi Arabia', year: '2024', image: '/images/still-house.webp', alt: 'Layered sandstone museum in a desert courtyard', text: 'A low sandstone museum set into the desert, with deep recesses that offer shade as visitors move between the galleries and the courtyard.' },
+  { name: 'Pine Residence', summary: 'A low concrete home at the forest edge.', type: 'Residential', place: 'Oslo, Norway', year: '2023', image: '/images/pine-residence.webp', alt: 'A dark concrete residence at the edge of a pine forest', text: 'A low concrete residence set among the pines. The broad roof shelters the living spaces while the glazed walls open them to the forest.' },
+  { name: 'The Limestone Chapel', summary: 'A quiet chapel shaped by a single shaft of light.', type: 'Cultural', place: 'Puglia, Italy', year: '2022', image: '/images/limestone-chapel.webp', alt: 'A pale limestone chapel in open Mediterranean terrain', text: 'A narrow opening in the limestone wall admits a shaft of daylight that moves slowly across the chapel floor.' },
+  { name: 'The Desert Court', summary: 'An open-air court sheltered by sandstone walls.', type: 'Public space', place: 'AlUla, Saudi Arabia', year: '2024', image: '/images/still-house.webp', alt: 'An open courtyard in front of the layered sandstone museum', text: 'Part of the same AlUla site as The Still House, the court creates a sheltered place to pause between the museum and the desert.' },
 ];
 
 const words = ['Architecture', 'in', 'its', 'quietest', 'form.'];
@@ -139,16 +140,15 @@ export default function Home() {
             <div className="index-list">
               {projects.map((project, i) => (
                 <button key={project.name} ref={i === 0 ? firstProject : undefined} className="project-option" data-active={preview === i} onPointerEnter={(event) => { if (event.pointerType !== 'touch') setPreview(i); }} onFocus={() => setPreview(i)} onClick={() => selectProject(i)}>
-                  <span className="micro">{number(i)}</span>
-                  <span>{project.name}</span>
-                  <ArrowUpRight size={20} aria-hidden="true" />
+                  <span className="project-option-name">{project.name}</span>
+                  <span className="project-option-summary">{project.summary}</span>
                 </button>
               ))}
             </div>
             <figure className="index-preview">
               <div className="preview-crop">
                 {projects.map((project, i) => (
-                  <img key={project.image} src={project.image.replace('.webp', '-preview.webp')} fetchPriority="low" decoding="async" alt={project.alt} aria-hidden={preview !== i} data-active={preview === i} />
+                  <img key={project.name} src={project.image.replace('.webp', '-preview.webp')} fetchPriority="low" decoding="async" alt={project.alt} aria-hidden={preview !== i} data-active={preview === i} />
                 ))}
               </div>
               <figcaption className="micro flex justify-between gap-4"><span>{projects[preview].place}</span><span>{projects[preview].type} · {projects[preview].year}</span></figcaption>

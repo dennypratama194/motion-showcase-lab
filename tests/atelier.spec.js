@@ -61,12 +61,14 @@ test('fits a narrow touch viewport and cycles projects', async ({ browser }) => 
     await expect(page).toHaveURL(/#project-detail$/);
     await page.goto('/');
     await page.getByRole('button', { name: 'Projects' }).tap();
-    await page.getByRole('button', { name: /Limestone Chapel/ }).tap();
-    await expect(page.getByRole('heading', { name: 'The Limestone Chapel' })).toBeVisible();
+    const nav = page.getByRole('navigation', { name: 'Project index' });
+    await expect(nav.getByRole('button')).toHaveCount(4);
+    await nav.getByRole('button', { name: /The Desert Court/ }).tap();
+    await expect(page.getByRole('heading', { name: 'The Desert Court' })).toBeVisible();
     await page.getByRole('button', { name: 'Next project' }).tap();
     await expect(page.getByRole('heading', { name: 'The Still House', exact: true })).toBeVisible();
     await page.getByRole('button', { name: 'Previous project' }).tap();
-    await expect(page.getByRole('heading', { name: 'The Limestone Chapel' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'The Desert Court' })).toBeVisible();
   } finally {
     await page.close();
   }
