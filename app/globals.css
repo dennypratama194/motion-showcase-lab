@@ -117,13 +117,16 @@ h1 { margin: 16px 0 0; font: 400 clamp(50px, 7.85vw, 113px)/.9 var(--font-displa
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  #work {
+  :root {
     --curtain-delay: 120ms;
     --curtain-duration: 1s;
-    --text-start: calc(var(--curtain-delay) + var(--curtain-duration) + 32ms);
+    --header-start: calc(var(--curtain-delay) + var(--curtain-duration) + 32ms);
+    --header-duration: 260ms;
+    --text-start: calc(var(--header-start) + var(--header-duration) + 32ms);
   }
   .hero-mask { animation: image-reveal var(--curtain-duration) cubic-bezier(.22, 1, .36, 1) var(--curtain-delay) backwards; }
   .hero-image { animation: image-settle var(--curtain-duration) cubic-bezier(.22, 1, .36, 1) var(--curtain-delay) backwards; }
+  .header-inner { animation: header-reveal var(--header-duration) cubic-bezier(.22, 1, .36, 1) var(--header-start) backwards; }
   .hero-word { animation: word-rise 680ms cubic-bezier(.22, 1, .36, 1) calc(var(--text-start) + var(--word-delay, 0ms)) backwards; }
   .headline-line:first-child .word-mask:nth-child(2) { --word-delay: 55ms; }
   .headline-line:nth-child(2) .word-mask:nth-child(1) { --word-delay: 110ms; }
@@ -131,6 +134,10 @@ h1 { margin: 16px 0 0; font: 400 clamp(50px, 7.85vw, 113px)/.9 var(--font-displa
   .headline-line:nth-child(2) .word-mask:nth-child(3) { --word-delay: 220ms; }
   .intro-detail { animation: fade-rise 420ms ease-out var(--text-start) backwards; }
   .hero-caption { animation: fade-rise 500ms ease-out calc(var(--text-start) + 260ms) backwards; }
+}
+@keyframes header-reveal {
+  from { opacity: 0; transform: translateY(-8px); visibility: hidden; }
+  to { opacity: 1; transform: translateY(0); visibility: visible; }
 }
 @keyframes word-rise {
   from { opacity: 0; transform: translateY(112%); }
