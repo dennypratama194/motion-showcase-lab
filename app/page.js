@@ -34,9 +34,9 @@ export default function Home() {
       onComplete: () => { if (!open) setShown(false); },
     });
     animation.to(panel.current, {
-      clipPath: open ? 'inset(0% 0 0 0)' : 'inset(0% 0 100% 0)',
-      y: open ? 0 : -10,
-      duration: reduced ? 0 : open ? 0.52 : 0.32,
+      clipPath: open ? 'inset(0% 0 0% 0 round 8px)' : 'inset(0% 0 100% 0 round 8px)',
+      y: open ? 0 : -8,
+      duration: reduced ? 0 : open ? 0.36 : 0.24,
       ease: open ? 'power4.out' : 'power2.inOut',
     }, 0).to(backdrop.current, {
       opacity: open ? 1 : 0,
@@ -99,7 +99,7 @@ export default function Home() {
             <div className="index-list">
               <p className="micro index-label"><span className="marker" /> Selected projects</p>
               {projects.map((project, i) => (
-                <button key={project.name} ref={i === 0 ? firstProject : undefined} className="project-option" style={{ '--row-delay': `${i * 55}ms` }} data-active={preview === i} onPointerEnter={(event) => { if (event.pointerType !== 'touch') setPreview(i); }} onFocus={() => setPreview(i)} onClick={() => selectProject(i)}>
+                <button key={project.name} ref={i === 0 ? firstProject : undefined} className="project-option" style={{ '--row-delay': `${i * 35}ms` }} data-active={preview === i} onPointerEnter={(event) => { if (event.pointerType !== 'touch') setPreview(i); }} onFocus={() => setPreview(i)} onClick={() => selectProject(i)}>
                   <span className="micro">{number(i)}</span>
                   <span>{project.name}</span>
                   <ArrowUpRight size={20} aria-hidden="true" />
