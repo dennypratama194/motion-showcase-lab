@@ -137,7 +137,6 @@ export default function Home() {
         <nav id="project-index" ref={panel} aria-label="Project index" className="frame project-index" hidden={!shown} inert={!open} onPointerEnter={() => clearTimeout(hoverClose.current)} onPointerLeave={leaveMenu}>
           <div className="index-grid">
             <div className="index-list">
-              <p className="micro index-label"><span className="marker" /> Selected projects</p>
               {projects.map((project, i) => (
                 <button key={project.name} ref={i === 0 ? firstProject : undefined} className="project-option" data-active={preview === i} onPointerEnter={(event) => { if (event.pointerType !== 'touch') setPreview(i); }} onFocus={() => setPreview(i)} onClick={() => selectProject(i)}>
                   <span className="micro">{number(i)}</span>
