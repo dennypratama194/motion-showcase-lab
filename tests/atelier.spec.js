@@ -8,10 +8,8 @@ test('reveals the hero, previews a project on hover and closes the index', async
   await expect(heading).toBeVisible();
   const { curtainEnd, headerStart, headerEnd, textStarts } = await page.evaluate(() => {
     const toMilliseconds = (time) => Number.parseFloat(time) * (time.endsWith('ms') ? 1 : 1000);
-    const curtainEnd = Math.max(...Array.from(document.querySelectorAll('.hero-mask, .hero-image'), (element) => {
-      const style = getComputedStyle(element);
-      return toMilliseconds(style.animationDelay) + toMilliseconds(style.animationDuration);
-    }));
+    const curtain = getComputedStyle(document.querySelector('.hero-mask'), '::before');
+    const curtainEnd = toMilliseconds(curtain.animationDelay) + toMilliseconds(curtain.animationDuration);
     const header = getComputedStyle(document.querySelector('.header-inner'));
     const headerStart = toMilliseconds(header.animationDelay);
     const headerEnd = headerStart + toMilliseconds(header.animationDuration);
@@ -24,7 +22,10 @@ test('reveals the hero, previews a project on hover and closes the index', async
   expect(headerStart).toBeGreaterThan(curtainEnd);
   expect(headerEnd).toBeGreaterThan(headerStart);
   expect(Math.min(...textStarts)).toBeGreaterThan(headerEnd);
-  await expect.poll(() => page.locator('.hero-mask').evaluate((element) => getComputedStyle(element).clipPath)).toBe('none');
+  await expect.poll(() => page.locator('.hero-mask').evaluate((element) => {
+    const transform = getComputedStyle(element, '::before').transform;
+    return transform !== 'none' && new DOMMatrix(transform).m42 <= -element.clientHeight;
+  })).toBe(true);
   const hero = page.getByRole('region', { name: 'Featured project' });
   await expect.poll(() => hero.getByRole('img').evaluate((image) => image.naturalWidth)).toBeGreaterThan(0);
 

@@ -11,6 +11,7 @@ import { duration, fps, viewport } from '../remotion/format.mjs';
 const url = process.env.ATELIER_URL || 'http://localhost:3000';
 const output = resolve(process.env.ATELIER_OUTPUT || 'artifacts');
 const coverSeconds = 0.5;
+const introFrames = 80;
 const browserExecutable = process.env.CHROMIUM_PATH || chromium.executablePath();
 
 async function captureCover(browser, publicDir) {
@@ -48,17 +49,39 @@ async function captureMotion(browser) {
       });
     });
 
-    await page.setContent('<body style="margin:0;background:#342c23"></body>');
-    const session = await page.context().newCDPSession(page);
+    await page.goto(url, { waitUntil: 'domcontentloaded' });
+    // Sample the live CSS intro at exact frame intervals, independent of browser paint cadence.
+    const intro = await page.evaluateHandle(() => {
+      const animations = document.getAnimations();
+      for (const animation of animations) animation.pause();
+      return animations;
+    });
+    if (!await intro.evaluate((animations) => animations.some((animation) => animation.animationName === 'curtain-rise'))) {
+      throw new Error('The hero curtain animation was unavailable for capture');
+    }
+    await page.locator('.hero-image').evaluate((image) => image.decode());
+    await page.evaluate(() => document.fonts.ready);
     const frames = [];
+    for (let frame = 0; frame <= introFrames; frame++) {
+      const time = frame / fps;
+      await intro.evaluate((animations, milliseconds) => {
+        for (const animation of animations) animation.currentTime = milliseconds;
+      }, time * 1000);
+      const screenshot = await page.screenshot({ type: 'jpeg', quality: 92 });
+      frames.push({ data: screenshot.toString('base64'), time });
+    }
+    await intro.dispose();
+
+    const session = await page.context().newCDPSession(page);
+    const introSeconds = introFrames / fps;
+    const start = Date.now();
     session.on('Page.screencastFrame', ({ data, metadata, sessionId }) => {
-      if (metadata.timestamp) frames.push({ data, time: metadata.timestamp });
+      const time = introSeconds + (metadata.timestamp - start / 1000);
+      if (time > introSeconds && time < duration - coverSeconds) frames.push({ data, time });
       void session.send('Page.screencastFrameAck', { sessionId }).catch(() => {});
     });
     await session.send('Page.startScreencast', { format: 'jpeg', quality: 92, maxWidth: viewport.width, maxHeight: viewport.height });
-    const start = Date.now();
-    const at = (seconds) => delay(Math.max(0, start + seconds * 1000 - Date.now()));
-    await page.goto(url, { waitUntil: 'domcontentloaded' });
+    const at = (seconds) => delay(Math.max(0, start + (seconds - introSeconds) * 1000 - Date.now()));
 
     let pointer = { x: 945, y: 38 };
     async function glide(x, y, duration = 390) {
@@ -98,10 +121,7 @@ async function captureMotion(browser) {
     await at(duration - coverSeconds);
     await session.send('Page.stopScreencast');
 
-    const startSeconds = start / 1000;
-    const captured = frames.filter(({ time }) => time >= startSeconds && time < startSeconds + duration - coverSeconds);
-    if (captured.length < 30) throw new Error(`Only ${captured.length} motion frames were captured`);
-    return captured;
+    return frames;
   } finally {
     await page.close();
   }
@@ -114,9 +134,9 @@ async function renderReel(captured, temporary, publicDir) {
 
   let index = 0;
   const frames = Array.from({ length: duration * fps }, (_, frame) => {
-    const seconds = frame / fps;
-    if (seconds < coverSeconds) return 'cover.png';
-    const time = captured[0].time + seconds - coverSeconds;
+    const motionFrame = frame - coverSeconds * fps;
+    if (motionFrame < 0) return 'cover.png';
+    const time = motionFrame / fps;
     while (index + 1 < captured.length && captured[index + 1].time <= time) index++;
     return `frame-${index}.jpg`;
   });
