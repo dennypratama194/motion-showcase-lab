@@ -4,8 +4,9 @@ import '@fontsource/instrument-serif/latin-400-italic.css';
 import './globals.css';
 
 export const metadata = {
-  title: 'ATELIER — Independent Architecture Practice',
-  description: 'An independent architecture practice exploring the quiet intersection of form, material, and place.',
+  title: 'Serein — The Pilates Studio',
+  description: 'Small-group reformer Pilates, mat Pilates, and private sessions at Serein.',
+  icons: { icon: '/serein/icon.svg' },
 };
 
 export default function RootLayout({ children }) {

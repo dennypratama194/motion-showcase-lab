@@ -1,203 +1,118 @@
 'use client';
 
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { ArrowLeft, ArrowRight, ArrowUpRight, ChevronDown } from 'lucide-react';
-import gsap from 'gsap';
+import { useRef, useState } from 'react';
+import { ArrowDown, ArrowUpRight, ChevronDown } from 'lucide-react';
 
-const projects = [
-  { name: 'Pine Residence', summary: 'A low concrete home at the forest edge.', type: 'Residential', place: 'Oslo, Norway', year: '2023', image: '/images/pine-residence.webp', alt: 'A dark concrete residence at the edge of a pine forest', text: 'A low concrete residence set among the pines. The broad roof shelters the living spaces while the glazed walls open them to the forest.' },
-  { name: 'The Still House', summary: 'A sandstone museum carved by shadow.', type: 'Cultural', place: 'AlUla, Saudi Arabia', year: '2024', image: '/images/still-house.webp', alt: 'Layered sandstone museum in a desert courtyard', text: 'A low sandstone museum set into the desert, with deep recesses that offer shade as visitors move between the galleries and the courtyard.' },
-  { name: 'The Limestone Chapel', summary: 'A quiet chapel shaped by a single shaft of light.', type: 'Cultural', place: 'Puglia, Italy', year: '2022', image: '/images/limestone-chapel.webp', alt: 'A pale limestone chapel in open Mediterranean terrain', text: 'A narrow opening in the limestone wall admits a shaft of daylight that moves slowly across the chapel floor.' },
-  { name: 'The Desert Court', summary: 'An open-air court sheltered by sandstone walls.', type: 'Public space', place: 'AlUla, Saudi Arabia', year: '2024', image: '/images/still-house.webp', alt: 'An open courtyard in front of the layered sandstone museum', text: 'Part of the same AlUla site as The Still House, the court creates a sheltered place to pause between the museum and the desert.' },
+const classes = [
+  { name: 'Reformer', level: 'All levels', format: 'Small group', duration: '50 min', summary: 'Spring-assisted movement for balanced strength and control.', detail: 'The reformer’s springs offer both support and resistance. Classes progress at a steady pace, with time to adjust the equipment and find a version of each exercise that suits you.' },
+  { name: 'Mat Pilates', level: 'All levels', format: 'Small group', duration: '45 min', summary: 'A grounded practice built around breath, alignment, and flow.', detail: 'With a mat and a few small props, we work through a sequence of slow, deliberate movements. The instructor offers variations throughout the class.' },
+  { name: 'Private Sessions', level: 'Tailored to you', format: 'One to one', duration: '55 min', summary: 'A personal session shaped around your pace and goals.', detail: 'You and your instructor decide where to focus, whether that’s learning the fundamentals or spending more time with a particular movement. Sessions can include both mat and reformer work.' },
 ];
 
-const words = ['Architecture', 'in', 'its', 'quietest', 'form.'];
-const number = (index) => String(index + 1).padStart(2, '0');
+const questions = [
+  ['Do I need Pilates experience?', 'No. Reformer and Mat Pilates welcome beginners. Let your instructor know it’s your first class so they can introduce the equipment and offer variations.'],
+  ['What should I bring?', 'Wear comfortable clothing you can move in and bring water. Grip socks are helpful for reformer classes. Mats and small props are provided.'],
+  ['Which class should I choose?', 'Choose Mat Pilates if you’d like to begin with floor-based exercises, Reformer if you’re curious about spring resistance, or a Private Session for one-to-one guidance.'],
+];
 
 export default function Home() {
-  const [open, setOpen] = useState(false);
-  const [shown, setShown] = useState(false);
-  const [preview, setPreview] = useState(0);
   const [selected, setSelected] = useState(0);
-  const panel = useRef(null);
-  const toggle = useRef(null);
-  const firstProject = useRef(null);
-  const hero = useRef(null);
-  const backdrop = useRef(null);
-  const keyboardOpen = useRef(false);
-  const hoverOpen = useRef(false);
-  const hoverClose = useRef(null);
-  const active = projects[selected];
+  const tabList = useRef(null);
+  const active = classes[selected];
 
-  useLayoutEffect(() => {
-    if (!shown) return;
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (open && keyboardOpen.current) firstProject.current?.focus();
-    const animation = gsap.timeline({
-      onComplete: () => { if (!open) setShown(false); },
-    });
-    animation.to(panel.current, {
-      opacity: open ? 1 : 0,
-      y: open ? 0 : -9,
-      duration: reduced ? 0 : open ? 0.38 : 0.24,
-      ease: open ? 'power2.inOut' : 'power1.inOut',
-    }, 0).to(backdrop.current, {
-      opacity: open ? 1 : 0,
-      duration: reduced ? 0 : 0.24,
-      ease: 'power2.out',
-    }, 0);
-    if (reduced) animation.progress(1);
-    return () => animation.kill();
-  }, [open, shown]);
-
-  useEffect(() => () => clearTimeout(hoverClose.current), []);
-
-  useEffect(() => {
-    if (!open) return;
-    function closeOnEscape(event) {
-      if (event.key === 'Escape') {
-        setOpen(false);
-        toggle.current?.focus();
-      }
-    }
-    function closeOutside(event) {
-      if (!panel.current?.contains(event.target) && !toggle.current?.contains(event.target)) {
-        if (event.target === backdrop.current && panel.current?.contains(document.activeElement)) toggle.current?.focus();
-        setOpen(false);
-      }
-    }
-    window.addEventListener('keydown', closeOnEscape);
-    window.addEventListener('pointerdown', closeOutside);
-    return () => {
-      window.removeEventListener('keydown', closeOnEscape);
-      window.removeEventListener('pointerdown', closeOutside);
-    };
-  }, [open]);
-
-  function showProjects(keyboard = false) {
-    keyboardOpen.current = keyboard;
-    setPreview(selected);
-    setShown(true);
-    setOpen(true);
-  }
-
-  function enterTrigger(event) {
-    if (event.pointerType !== 'mouse') return;
-    clearTimeout(hoverClose.current);
-    if (open) return;
-    hoverOpen.current = true;
-    showProjects();
-  }
-
-  function leaveMenu(event) {
-    if (event.pointerType !== 'mouse' || !hoverOpen.current) return;
-    clearTimeout(hoverClose.current);
-    // Allow diagonal travel from the centered trigger into the panel.
-    hoverClose.current = setTimeout(() => {
-      if (!panel.current?.contains(document.activeElement)) setOpen(false);
-    }, 130);
-  }
-
-  function toggleProjects(event) {
-    clearTimeout(hoverClose.current);
-    hoverOpen.current = false;
-    if (open) {
-      if (event.detail === 0 && !keyboardOpen.current) {
-        keyboardOpen.current = true;
-        firstProject.current?.focus();
-      } else {
-        setOpen(false);
-      }
-    } else {
-      showProjects(event.detail === 0);
-    }
-  }
-
-  function selectProject(index) {
-    clearTimeout(hoverClose.current);
-    setSelected(index);
-    setOpen(false);
-    hero.current?.focus({ preventScroll: true });
+  function moveTab(event, index) {
+    const next = {
+      ArrowRight: (index + 1) % classes.length,
+      ArrowLeft: (index + classes.length - 1) % classes.length,
+      Home: 0,
+      End: classes.length - 1,
+    }[event.key];
+    if (next === undefined) return;
+    event.preventDefault();
+    tabList.current.querySelectorAll('button')[next].focus();
+    setSelected(next);
   }
 
   return (
-    <div>
-      <header className="site-header">
-        <div className="frame header-inner">
-          <a className="brand" href="#" aria-label="Atelier home" onClick={() => { setOpen(false); setSelected(0); }}><img src="/atelier-wordmark.svg" width="152" height="30" alt="" /></a>
-          <nav className="header-menu" aria-label="Main navigation">
-            <button className="index-button" ref={toggle} aria-expanded={open} aria-controls="project-index" onPointerEnter={enterTrigger} onPointerLeave={leaveMenu} onClick={toggleProjects}>
-              <span>Projects</span>
-              <ChevronDown size={14} aria-hidden="true" />
-            </button>
-            <a href="#practice" onClick={() => setOpen(false)}>Practice</a>
-            <a href="#studio" onClick={() => setOpen(false)}>Studio</a>
+    <>
+      <a className="skip-link" href="#main">Skip to content</a>
+      <header className="masthead" id="top">
+        <div className="shell header-inner">
+          <a className="wordmark" href="#top" aria-label="Serein home">Serein<span>.</span></a>
+          <nav aria-label="Main navigation">
+            <a href="#method">The method</a>
+            <a href="#classes">Classes</a>
+            <a href="#studio">Studio</a>
           </nav>
-          <a className="header-cta" href="#project-detail" onClick={() => setOpen(false)}><span>View project</span><ArrowUpRight size={15} aria-hidden="true" /></a>
+          <a className="header-action" href="#classes">Find a class <ArrowUpRight size={14} aria-hidden="true" /></a>
         </div>
-        <div className="menu-backdrop" ref={backdrop} hidden={!shown} aria-hidden="true" />
-        <nav id="project-index" ref={panel} aria-label="Project index" className="frame project-index" hidden={!shown} inert={!open} onPointerEnter={() => clearTimeout(hoverClose.current)} onPointerLeave={leaveMenu}>
-          <div className="index-grid">
-            <div className="index-list">
-              {projects.map((project, i) => (
-                <button key={project.name} ref={i === 0 ? firstProject : undefined} className="project-option" data-active={preview === i} onPointerEnter={(event) => { if (event.pointerType !== 'touch') setPreview(i); }} onFocus={() => setPreview(i)} onClick={() => selectProject(i)}>
-                  <span className="project-option-name">{project.name}</span>
-                  <span className="project-option-summary">{project.summary}</span>
-                </button>
-              ))}
-            </div>
-            <figure className="index-preview">
-              <div className="preview-crop">
-                {projects.map((project, i) => (
-                  <img key={project.name} src={project.image.replace('.webp', '-preview.webp')} fetchPriority="low" decoding="async" alt={project.alt} aria-hidden={preview !== i} data-active={preview === i} />
-                ))}
-              </div>
-              <figcaption className="micro flex justify-between gap-4"><span>{projects[preview].place}</span><span>{projects[preview].type} · {projects[preview].year}</span></figcaption>
-            </figure>
-          </div>
-        </nav>
       </header>
 
-      <main>
-        <section id="work" ref={hero} tabIndex={-1} aria-label="Featured project">
-          <div className="hero-mask">
-            <img className="hero-image" src={active.image} alt={active.alt} fetchPriority="high" />
+      <main id="main">
+        <section className="hero" id="method" aria-labelledby="hero-title">
+          <div className="hero-content">
+            <p className="eyebrow hero-reveal"><span /> The Pilates Studio</p>
+            <h1 className="hero-reveal" id="hero-title">Move with<br /><em>intention.</em></h1>
+            <p className="hero-intro hero-reveal">Reformer, mat, and private Pilates in a studio designed for unhurried movement.</p>
+            <a className="primary-action hero-reveal" href="#classes">Explore the classes <ArrowUpRight size={16} aria-hidden="true" /></a>
           </div>
-          <div className="frame hero-heading">
-            <p className="micro eyebrow intro-detail">Selected Works</p>
-            <h1 aria-label="Architecture in its quietest form.">
-              <span className="headline-line" aria-hidden="true">{words.slice(0, 2).map((word) => <span className="word-mask" key={word}><span className="hero-word">{word}</span></span>)}</span>
-              <span className="headline-line" aria-hidden="true">{words.slice(2).map((word) => <span className="word-mask" key={word}><span className={`hero-word ${word === 'quietest' ? 'italic-word' : ''}`}>{word}</span></span>)}</span>
-            </h1>
-          </div>
-
-          <div className="frame hero-caption">
-            <div className="caption-project" aria-live="polite"><span className="micro caption-index">/ {number(selected)}</span><a href="#project-detail">{active.name}</a></div>
-            <div className="caption-location micro">{active.place} <span>—</span> {active.year}</div>
-            <div className="caption-arrows">
-              <button aria-label="Previous project" onClick={() => setSelected((selected + projects.length - 1) % projects.length)}><ArrowLeft size={17} /></button>
-              <button aria-label="Next project" onClick={() => setSelected((selected + 1) % projects.length)}><ArrowRight size={17} /></button>
-            </div>
+          <div className="hero-visual">
+            <img src="/serein/hero.webp" alt="A woman stretching on a reformer in a sunlit Pilates studio" fetchPriority="high" />
           </div>
         </section>
 
-        <section id="project-detail" tabIndex={-1} className="frame detail-section">
-          <p className="micro"><span className="marker" /> {active.type} / {active.year}</p>
-          <div><h2>{active.name}</h2><p>{active.text}</p></div>
-        </section>
-        <section id="practice" tabIndex={-1} className="frame detail-section">
-          <p className="micro"><span className="marker" /> Practice</p>
-          <div>
-            <h2>How we work</h2>
-            <p>We begin by studying the site: where the light falls, how people move through it, and which materials belong there. Sketches, models, and material samples help us test each idea before it becomes a building.</p>
+        <div className="shell hero-foot">
+          <p>Reformer <span /> Mat <span /> Private</p>
+          <a href="#classes">Discover the practice <ArrowDown size={14} aria-hidden="true" /></a>
+        </div>
+
+        <section className="shell classes" id="classes" aria-labelledby="classes-title">
+          <div className="section-heading">
+            <p className="eyebrow">The practice</p>
+            <h2 id="classes-title">Find your <em>rhythm.</em></h2>
+          </div>
+          <div className="class-tabs" role="tablist" aria-label="Pilates classes" ref={tabList}>
+            {classes.map((service, index) => (
+              <button type="button" role="tab" key={service.name} id={`class-tab-${index}`} aria-selected={selected === index} aria-controls="class-detail" tabIndex={selected === index ? 0 : -1} onClick={() => setSelected(index)} onKeyDown={(event) => moveTab(event, index)}>
+                <span>{service.name}</span>
+                <ArrowUpRight size={17} aria-hidden="true" />
+                <span className="tab-summary">{service.summary}</span>
+              </button>
+            ))}
+          </div>
+          <div id="class-detail" role="tabpanel" aria-labelledby={`class-tab-${selected}`} tabIndex={0} className="class-detail">
+            <div className="class-facts"><span>{active.format}</span><span>{active.duration}</span><span>{active.level}</span></div>
+            <p>{active.detail}</p>
+            <a href="#visit">Plan your first visit <ArrowUpRight size={14} aria-hidden="true" /></a>
           </div>
         </section>
-        <section id="studio" tabIndex={-1} className="frame detail-section">
-          <p className="micro"><span className="marker" /> The Studio</p>
-          <div><h2>ATELIER</h2><p>We design buildings around the ways people experience light, material, and landscape.</p></div>
+
+        <section className="studio" id="studio" aria-labelledby="studio-title">
+          <div className="studio-visual"><img src="/serein/studio.webp" alt="Oak reformers lined up beneath the arches of the studio" loading="lazy" /></div>
+          <div className="studio-content">
+            <p className="eyebrow">Inside Serein</p>
+            <h2 id="studio-title">Room to<br /><em>slow down.</em></h2>
+            <p>Our small classes give instructors time to offer individual guidance. You’ll have room to learn the equipment, ask questions, and move at a pace that works for you.</p>
+            <a href="#visit">Your first visit <ArrowUpRight size={15} aria-hidden="true" /></a>
+          </div>
+        </section>
+
+        <section className="shell visit" id="visit" aria-labelledby="visit-title">
+          <div className="section-heading"><p className="eyebrow">Before class</p><h2 id="visit-title">Your first <em>visit.</em></h2></div>
+          <div className="questions">
+            {questions.map(([question, answer]) => (
+              <details key={question}>
+                <summary>{question}<ChevronDown size={16} aria-hidden="true" /></summary>
+                <p>{answer}</p>
+              </details>
+            ))}
+          </div>
         </section>
       </main>
-      <footer className="frame site-footer micro"><span>ATELIER Architecture Practice</span><a href="#">Back to top ↑</a></footer>
-    </div>
+
+      <footer className="site-footer">
+        <div className="shell"><a className="wordmark" href="#top" aria-label="Back to top">Serein<span>.</span></a><p>The Pilates Studio</p><a href="#classes">Explore classes <ArrowUpRight size={14} aria-hidden="true" /></a></div>
+      </footer>
+    </>
   );
 }

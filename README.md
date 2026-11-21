@@ -1,6 +1,6 @@
-# ATELIER
+# Serein — The Pilates Studio
 
-An editorial architecture portfolio concept built with Next.js, Tailwind CSS, and GSAP. The four projects are fictional and use original generated architectural imagery.
+A fictional boutique Pilates studio. The experience showcases small-group reformer and mat Pilates, private sessions, the studio, and first-visit guidance.
 
 ## Run locally
 
@@ -11,7 +11,7 @@ npm ci
 npm run dev
 ```
 
-Open http://localhost:3000. Hover over **Projects**, or activate it with a tap or the keyboard, to browse projects. Hovering or focusing a project changes its preview. Activating a project updates the featured work. Escape closes the index and returns focus to its toggle.
+Open http://localhost:3000. Use the class tabs to compare sessions and the first-visit questions to explore the format.
 
 ## Build and test
 
@@ -21,14 +21,8 @@ npx playwright install chromium
 npm test
 ```
 
-Set `CHROMIUM_PATH` to use a system Chromium. The tests check hero readiness, pointer and keyboard navigation, reduced motion, and project selection on a 320 px touch viewport. Set `ATELIER_URL` to test an already running instance.
+Set `CHROMIUM_PATH` to use a system Chromium or `SEREIN_URL` to test an already running server.
 
-## Export the cover and video
+## Capture for Dribbble
 
-Install Chromium with `npx playwright install chromium` or set `CHROMIUM_PATH` to a system Chromium. Run `npm run build` and `npm start`, then run this in a second terminal:
-
-```bash
-npm run capture
-```
-
-Playwright samples the live hero entrance at fixed frame intervals, then captures the index opening, two preview hovers, and index closing in real time. Remotion places the 1440 × 900 browser capture inside a 1600 × 1200 canvas and renders an eight-second H.264 MP4 with a half-second opening cover hold and a matching PNG to `artifacts/`. Set `ATELIER_URL`, `ATELIER_OUTPUT`, or `CHROMIUM_PATH` to override the server URL, output directory, or Chromium executable.
+With the site running, run `npm run capture`. Playwright captures the page and Remotion renders an eight-second 1600 × 1200 reel and a matching cover in `artifacts/`. The outer frame surrounds a 1440 × 900 browser viewport. Set `SEREIN_URL` if the site uses a different port or `SEREIN_OUTPUT` to set the output directory.

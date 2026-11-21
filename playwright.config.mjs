@@ -1,6 +1,6 @@
 import { defineConfig } from '@playwright/test';
 
-const baseURL = process.env.ATELIER_URL || 'http://localhost:3000';
+const baseURL = process.env.SEREIN_URL || 'http://localhost:3000';
 
 export default defineConfig({
   testDir: './tests',
@@ -9,7 +9,7 @@ export default defineConfig({
     browserName: 'chromium',
     launchOptions: { executablePath: process.env.CHROMIUM_PATH || undefined },
   },
-  webServer: process.env.ATELIER_URL ? undefined : {
+  webServer: process.env.SEREIN_URL ? undefined : {
     command: 'npm run dev -- --port 3000',
     url: baseURL,
     reuseExistingServer: !process.env.CI,
