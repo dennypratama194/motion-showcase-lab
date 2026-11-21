@@ -52,28 +52,24 @@ h1 { margin: 16px 0 0; font: 400 clamp(50px, 7.85vw, 113px)/.85 Georgia, serif; 
 .caption-arrows { display: flex; justify-content: end; gap: 8px; }
 .caption-arrows button { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid #ffffff80; transition: background .2s, color .2s; }
 .site-header { --header-height: 80px; }
-.menu-backdrop { position: absolute; inset: 100% 0 auto; height: calc(100dvh - var(--header-height)); background: #19140f24; opacity: 0; }
-.project-index { position: absolute; inset: calc(100% + 8px) 0 auto; width: min(calc(100% - 2 * var(--frame)), 720px); max-height: calc(100dvh - var(--header-height) - 16px); overflow: auto; overscroll-behavior: contain; background: #27251f; color: var(--paper); border: 1px solid #ffffff24; border-radius: 8px; box-shadow: 0 16px 40px #19140f4d; clip-path: inset(0 0 100% 0 round 8px); transform: translateY(-8px); }
+.menu-backdrop { position: absolute; inset: 100% 0 auto; height: calc(100dvh - var(--header-height)); background: #19140f1a; opacity: 0; }
+.project-index { position: absolute; inset: calc(100% + 8px) 0 auto; width: min(calc(100% - 2 * var(--frame)), 720px); max-height: calc(100dvh - var(--header-height) - 16px); overflow: auto; overscroll-behavior: contain; background: #27251f; color: var(--paper); border: 1px solid #ffffff24; border-radius: 8px; box-shadow: 0 12px 28px #19140f45; opacity: 0; transform: translateY(-6px); }
 .project-index :focus-visible { outline-color: var(--paper); outline-offset: -3px; }
 .index-grid { grid-template-columns: minmax(0, 4.4fr) minmax(0, 5.6fr); gap: 16px; padding: 16px; align-items: stretch; }
 .index-list { min-width: 0; align-self: center; }
 .index-label { display: flex; align-items: center; gap: 8px; color: #d2c8b7; margin: 0 0 12px 8px; }
 .index-label .marker { background: #efa384; }
-.project-option { width: 100%; min-height: 52px; border-top: 1px solid #ffffff21; display: grid; grid-template-columns: 21px minmax(0, 1fr) 16px; align-items: center; text-align: left; padding: 10px 8px; gap: 6px; color: #ddd5c7; transition: background .25s, color .25s; }
+.project-option { width: 100%; min-height: 52px; border-top: 1px solid #ffffff21; display: grid; grid-template-columns: 21px minmax(0, 1fr) 16px; align-items: center; text-align: left; padding: 10px 8px; gap: 6px; color: #ddd5c7; transition: background .14s, color .14s; }
 .project-option span:nth-child(2) { font: 400 clamp(18px, 2.35vw, 22px)/1.1 Georgia, serif; letter-spacing: -.045em; }
-.project-option svg { width: 15px; opacity: .6; transition: opacity .25s, transform .25s; }
-.project-option[data-active=true] { background: #ffffff12; color: #fff9ef; }
+.project-option svg { width: 15px; opacity: .6; transition: opacity .14s, transform .14s; }
+.project-option[data-active=true] { background: #ffffff12; color: #fff9ef; box-shadow: inset 2px 0 #efa384; }
 .project-option[data-active=true] svg { opacity: 1; transform: translate(2px, -2px); }
 .project-option:last-of-type { border-bottom: 1px solid #ffffff21; }
 .index-preview { margin: 0; min-width: 0; }
 .preview-crop { position: relative; aspect-ratio: 1.75; overflow: hidden; border-radius: 4px; background: #423e35; }
-.preview-crop img { position: absolute; inset: 0; opacity: 0; transform: scale(1.035); transition: opacity .24s ease, transform .4s cubic-bezier(.22, 1, .36, 1); }
-.preview-crop img[data-active=true] { opacity: 1; transform: scale(1); }
+.preview-crop img { position: absolute; inset: 0; opacity: 0; transition: opacity .18s ease-out; }
+.preview-crop img[data-active=true] { opacity: 1; }
 .index-preview figcaption { margin-top: 10px; color: #d2c8b7; }
-@media (prefers-reduced-motion: no-preference) {
-  .project-index[data-open=true] .project-option { animation: fade-rise 300ms cubic-bezier(.22, 1, .36, 1) calc(35ms + var(--row-delay)) backwards; }
-  .project-index[data-open=true] .index-preview { animation: fade-rise 350ms cubic-bezier(.22, 1, .36, 1) 55ms backwards; }
-}
 .detail-section { padding-block: clamp(52px, 8vw, 112px); border-bottom: 1px solid var(--line); }
 .detail-section > p { grid-column: span 3; display: flex; align-items: center; gap: 10px; align-self: start; margin-top: 12px; }
 .detail-section > div { grid-column: 4 / 11; }

@@ -24,7 +24,7 @@ try {
     // Warm the assets and application so the capture starts with the entrance.
     await page.goto(url);
     await page.evaluate(async () => {
-      const paths = ['/images/still-house.webp', '/images/pine-residence.webp', '/images/limestone-chapel.webp'];
+      const paths = ['/images/still-house-preview.webp', '/images/pine-residence-preview.webp', '/images/limestone-chapel-preview.webp'];
       await Promise.all(paths.map(async (path) => {
         const image = new Image();
         image.src = path;
@@ -42,14 +42,14 @@ try {
     const at = (seconds) => delay(Math.max(0, start + seconds * 1000 - Date.now()));
     await page.reload({ waitUntil: 'domcontentloaded' });
     await at(2.45);
-    await page.getByRole('button', { name: 'Projects' }).click();
+    await page.getByRole('button', { name: 'Projects' }).hover();
     const nav = page.getByRole('navigation', { name: 'Project index' });
     await at(3.70);
     await nav.getByRole('button', { name: /Pine Residence/ }).hover();
     await at(4.95);
     await nav.getByRole('button', { name: /Limestone Chapel/ }).hover();
     await at(6.20);
-    await page.getByRole('button', { name: 'Projects' }).click();
+    await page.mouse.move(4, 200);
     await nav.waitFor({ state: 'hidden' });
     await session.send('Page.stopScreencast');
     const settled = await page.screenshot({ type: 'jpeg', quality: 92 });

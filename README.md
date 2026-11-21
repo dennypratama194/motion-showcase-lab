@@ -11,7 +11,7 @@ npm ci
 npm run dev
 ```
 
-Open http://localhost:3000. Use **Projects** to browse projects. Hovering or focusing a project changes its preview. Activating a project updates the featured work. Escape closes the index and returns focus to its toggle.
+Open http://localhost:3000. Hover over **Projects**, or activate it with a tap or the keyboard, to browse projects. Hovering or focusing a project changes its preview. Activating a project updates the featured work. Escape closes the index and returns focus to its toggle.
 
 ## Build and test
 

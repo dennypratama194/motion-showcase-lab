@@ -11,15 +11,16 @@ test('reveals the hero, previews a project on hover and closes the index', async
   await expect.poll(() => hero.getByRole('img').evaluate((image) => image.naturalWidth)).toBeGreaterThan(0);
 
   const index = page.getByRole('button', { name: 'Projects' });
-  await index.click();
+  await index.hover();
   const nav = page.getByRole('navigation', { name: 'Project index' });
   await expect(nav).toBeVisible();
   await nav.getByRole('button', { name: /Pine Residence/ }).hover();
+  await expect(index).toHaveAttribute('aria-expanded', 'true');
   await expect(nav.getByRole('img')).toHaveAccessibleName('A dark concrete residence at the edge of a pine forest');
   await expect(nav.getByText('Oslo, Norway')).toBeVisible();
-  await page.getByRole('button', { name: 'Projects' }).click();
+  await page.mouse.move(4, 200);
   await expect(page.locator('#project-index')).toBeHidden();
-  await index.click();
+  await index.hover();
   await expect(nav).toBeVisible();
   await page.locator('.menu-backdrop').click({ position: { x: 4, y: 30 } });
   await expect(page.locator('#project-index')).toBeHidden();

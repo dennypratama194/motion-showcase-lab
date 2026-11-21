@@ -24,6 +24,8 @@ export default function Home() {
   const hero = useRef(null);
   const backdrop = useRef(null);
   const keyboardOpen = useRef(false);
+  const hoverOpen = useRef(false);
+  const hoverClose = useRef(null);
   const active = projects[selected];
 
   useLayoutEffect(() => {
@@ -34,18 +36,20 @@ export default function Home() {
       onComplete: () => { if (!open) setShown(false); },
     });
     animation.to(panel.current, {
-      clipPath: open ? 'inset(0% 0 0% 0 round 8px)' : 'inset(0% 0 100% 0 round 8px)',
-      y: open ? 0 : -8,
-      duration: reduced ? 0 : open ? 0.36 : 0.24,
-      ease: open ? 'power4.out' : 'power2.inOut',
+      opacity: open ? 1 : 0,
+      y: open ? 0 : -6,
+      duration: reduced ? 0 : open ? 0.22 : 0.16,
+      ease: open ? 'power3.out' : 'power2.in',
     }, 0).to(backdrop.current, {
       opacity: open ? 1 : 0,
-      duration: reduced ? 0 : 0.3,
+      duration: reduced ? 0 : 0.16,
       ease: 'power2.out',
     }, 0);
     if (reduced) animation.progress(1);
     return () => animation.kill();
   }, [open, shown]);
+
+  useEffect(() => () => clearTimeout(hoverClose.current), []);
 
   useEffect(() => {
     if (!open) return;
@@ -69,7 +73,47 @@ export default function Home() {
     };
   }, [open]);
 
+  function showProjects(keyboard = false) {
+    keyboardOpen.current = keyboard;
+    setPreview(selected);
+    setShown(true);
+    setOpen(true);
+  }
+
+  function enterTrigger(event) {
+    if (event.pointerType !== 'mouse') return;
+    clearTimeout(hoverClose.current);
+    if (open) return;
+    hoverOpen.current = true;
+    showProjects();
+  }
+
+  function leaveMenu(event) {
+    if (event.pointerType !== 'mouse' || !hoverOpen.current) return;
+    clearTimeout(hoverClose.current);
+    // Allow diagonal travel from the centered trigger into the panel.
+    hoverClose.current = setTimeout(() => {
+      if (!panel.current?.contains(document.activeElement)) setOpen(false);
+    }, 130);
+  }
+
+  function toggleProjects(event) {
+    clearTimeout(hoverClose.current);
+    hoverOpen.current = false;
+    if (open) {
+      if (event.detail === 0 && !keyboardOpen.current) {
+        keyboardOpen.current = true;
+        firstProject.current?.focus();
+      } else {
+        setOpen(false);
+      }
+    } else {
+      showProjects(event.detail === 0);
+    }
+  }
+
   function selectProject(index) {
+    clearTimeout(hoverClose.current);
     setSelected(index);
     setOpen(false);
     hero.current?.focus({ preventScroll: true });
@@ -81,11 +125,7 @@ export default function Home() {
         <div className="frame header-inner">
           <a className="brand" href="#" aria-label="Atelier home" onClick={() => { setOpen(false); setSelected(0); }}>ATELIER<sup>®</sup></a>
           <nav className="header-menu" aria-label="Main navigation">
-            <button className="index-button" ref={toggle} aria-expanded={open} aria-controls="project-index" onClick={(event) => {
-              keyboardOpen.current = event.detail === 0;
-              if (!open) { setPreview(selected); setShown(true); }
-              setOpen(!open);
-            }}>
+            <button className="index-button" ref={toggle} aria-expanded={open} aria-controls="project-index" onPointerEnter={enterTrigger} onPointerLeave={leaveMenu} onClick={toggleProjects}>
               <span>Projects</span>
               <ChevronDown size={14} aria-hidden="true" />
             </button>
@@ -94,12 +134,12 @@ export default function Home() {
           <a className="header-cta" href="#project-detail" onClick={() => setOpen(false)}><span>View project</span><ArrowUpRight size={15} aria-hidden="true" /></a>
         </div>
         <div className="menu-backdrop" ref={backdrop} hidden={!shown} aria-hidden="true" />
-        <nav id="project-index" ref={panel} aria-label="Project index" className="frame project-index" data-open={open} hidden={!shown} inert={!open}>
+        <nav id="project-index" ref={panel} aria-label="Project index" className="frame project-index" hidden={!shown} inert={!open} onPointerEnter={() => clearTimeout(hoverClose.current)} onPointerLeave={leaveMenu}>
           <div className="index-grid">
             <div className="index-list">
               <p className="micro index-label"><span className="marker" /> Selected projects</p>
               {projects.map((project, i) => (
-                <button key={project.name} ref={i === 0 ? firstProject : undefined} className="project-option" style={{ '--row-delay': `${i * 35}ms` }} data-active={preview === i} onPointerEnter={(event) => { if (event.pointerType !== 'touch') setPreview(i); }} onFocus={() => setPreview(i)} onClick={() => selectProject(i)}>
+                <button key={project.name} ref={i === 0 ? firstProject : undefined} className="project-option" data-active={preview === i} onPointerEnter={(event) => { if (event.pointerType !== 'touch') setPreview(i); }} onFocus={() => setPreview(i)} onClick={() => selectProject(i)}>
                   <span className="micro">{number(i)}</span>
                   <span>{project.name}</span>
                   <ArrowUpRight size={20} aria-hidden="true" />
@@ -109,7 +149,7 @@ export default function Home() {
             <figure className="index-preview">
               <div className="preview-crop">
                 {projects.map((project, i) => (
-                  <img key={project.image} src={shown ? project.image : undefined} alt={project.alt} aria-hidden={preview !== i} data-active={preview === i} />
+                  <img key={project.image} src={project.image.replace('.webp', '-preview.webp')} fetchPriority="low" decoding="async" alt={project.alt} aria-hidden={preview !== i} data-active={preview === i} />
                 ))}
               </div>
               <figcaption className="micro flex justify-between gap-4"><span>{projects[preview].place}</span><span>{projects[preview].type} · {projects[preview].year}</span></figcaption>
