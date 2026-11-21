@@ -25,10 +25,10 @@ Set `CHROMIUM_PATH` to use a system Chromium. The tests check hero readiness, po
 
 ## Export the cover and video
 
-Install FFmpeg with H.264 encoding support. Run `npm run build` and `npm start`, then run this in a second terminal:
+Install Chromium with `npx playwright install chromium` or set `CHROMIUM_PATH` to a system Chromium. Run `npm run build` and `npm start`, then run this in a second terminal:
 
 ```bash
 npm run capture
 ```
 
-The script uses Playwright and Chromium to capture the live page, including the hero reveal, index opening, two preview hovers, and index closing. It writes a 1600 × 1200 PNG and an eight-second H.264 MP4 to `artifacts/`. Set `ATELIER_URL`, `ATELIER_OUTPUT`, or `CHROMIUM_PATH` to override the server URL, output directory, or Chromium executable.
+Playwright captures the live page from its first load through the hero reveal, index opening, two preview hovers, and index closing. Remotion places the 1440 × 900 browser capture inside a 1600 × 1200 canvas and renders an eight-second H.264 MP4 and a matching PNG cover to `artifacts/`. Set `ATELIER_URL`, `ATELIER_OUTPUT`, or `CHROMIUM_PATH` to override the server URL, output directory, or Chromium executable.
