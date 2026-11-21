@@ -18,7 +18,11 @@ test('reveals the hero, previews a project on hover and closes the index', async
   await expect(nav.getByRole('img')).toHaveAccessibleName('A dark concrete residence at the edge of a pine forest');
   await expect(nav.getByText('Oslo, Norway')).toBeVisible();
   await page.getByRole('button', { name: 'Projects' }).click();
-  await expect(nav).toBeHidden();
+  await expect(page.locator('#project-index')).toBeHidden();
+  await index.click();
+  await expect(nav).toBeVisible();
+  await page.locator('.menu-backdrop').click({ position: { x: 4, y: 30 } });
+  await expect(page.locator('#project-index')).toBeHidden();
   await expect(index).toHaveAttribute('aria-expanded', 'false');
   await expect(hero.getByRole('link', { name: 'The Still House', exact: true })).toBeVisible();
   expect(errors).toEqual([]);

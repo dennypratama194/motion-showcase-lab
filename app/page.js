@@ -22,7 +22,7 @@ export default function Home() {
   const toggle = useRef(null);
   const firstProject = useRef(null);
   const hero = useRef(null);
-  const previewImage = useRef(null);
+  const backdrop = useRef(null);
   const keyboardOpen = useRef(false);
   const active = projects[selected];
 
@@ -30,20 +30,22 @@ export default function Home() {
     if (!shown) return;
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (open && keyboardOpen.current) firstProject.current?.focus();
-    const animation = gsap.to(panel.current, {
-      clipPath: open ? 'inset(0% 0 0 0)' : 'inset(0% 0 100% 0)',
-      duration: reduced ? 0 : 0.48,
-      ease: open ? 'power3.out' : 'power3.inOut',
+    const animation = gsap.timeline({
       onComplete: () => { if (!open) setShown(false); },
     });
+    animation.to(panel.current, {
+      clipPath: open ? 'inset(0% 0 0 0)' : 'inset(0% 0 100% 0)',
+      y: open ? 0 : -10,
+      duration: reduced ? 0 : open ? 0.52 : 0.32,
+      ease: open ? 'power4.out' : 'power2.inOut',
+    }, 0).to(backdrop.current, {
+      opacity: open ? 1 : 0,
+      duration: reduced ? 0 : 0.3,
+      ease: 'power2.out',
+    }, 0);
+    if (reduced) animation.progress(1);
     return () => animation.kill();
   }, [open, shown]);
-
-  useLayoutEffect(() => {
-    if (!open || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const animation = gsap.fromTo(previewImage.current, { opacity: 0.35, scale: 1.045 }, { opacity: 1, scale: 1, duration: 0.45, ease: 'power2.out' });
-    return () => animation.kill();
-  }, [open, preview]);
 
   useEffect(() => {
     if (!open) return;
@@ -54,7 +56,10 @@ export default function Home() {
       }
     }
     function closeOutside(event) {
-      if (!panel.current?.contains(event.target) && !toggle.current?.contains(event.target)) setOpen(false);
+      if (!panel.current?.contains(event.target) && !toggle.current?.contains(event.target)) {
+        if (event.target === backdrop.current && panel.current?.contains(document.activeElement)) toggle.current?.focus();
+        setOpen(false);
+      }
     }
     window.addEventListener('keydown', closeOnEscape);
     window.addEventListener('pointerdown', closeOutside);
@@ -88,12 +93,13 @@ export default function Home() {
           </nav>
           <a className="header-cta" href="#project-detail" onClick={() => setOpen(false)}><span>View project</span><ArrowUpRight size={15} aria-hidden="true" /></a>
         </div>
-        <nav id="project-index" ref={panel} aria-label="Project index" className="project-index" hidden={!shown} inert={!open}>
-          <div className="frame index-grid">
+        <div className="menu-backdrop" ref={backdrop} hidden={!shown} aria-hidden="true" />
+        <nav id="project-index" ref={panel} aria-label="Project index" className="frame project-index" data-open={open} hidden={!shown} inert={!open}>
+          <div className="index-grid">
             <div className="index-list">
-              <p className="micro index-label"><span className="marker" /> Project Index <span>01—03</span></p>
+              <p className="micro index-label"><span className="marker" /> Selected projects</p>
               {projects.map((project, i) => (
-                <button key={project.name} ref={i === 0 ? firstProject : undefined} className="project-option" data-active={preview === i} onPointerEnter={() => setPreview(i)} onFocus={() => setPreview(i)} onClick={() => selectProject(i)}>
+                <button key={project.name} ref={i === 0 ? firstProject : undefined} className="project-option" style={{ '--row-delay': `${i * 55}ms` }} data-active={preview === i} onPointerEnter={(event) => { if (event.pointerType !== 'touch') setPreview(i); }} onFocus={() => setPreview(i)} onClick={() => selectProject(i)}>
                   <span className="micro">{number(i)}</span>
                   <span>{project.name}</span>
                   <ArrowUpRight size={20} aria-hidden="true" />
@@ -101,8 +107,12 @@ export default function Home() {
               ))}
             </div>
             <figure className="index-preview">
-              <div className="preview-crop"><img key={preview} ref={previewImage} src={projects[preview].image} alt={projects[preview].alt} /></div>
-              <figcaption className="micro flex justify-between gap-4"><span>{projects[preview].place}</span><span>{projects[preview].year}</span></figcaption>
+              <div className="preview-crop">
+                {projects.map((project, i) => (
+                  <img key={project.image} src={shown ? project.image : undefined} alt={project.alt} aria-hidden={preview !== i} data-active={preview === i} />
+                ))}
+              </div>
+              <figcaption className="micro flex justify-between gap-4"><span>{projects[preview].place}</span><span>{projects[preview].type} · {projects[preview].year}</span></figcaption>
             </figure>
           </div>
         </nav>
