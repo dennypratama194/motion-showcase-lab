@@ -95,7 +95,7 @@ async function captureMotion(browser) {
     }
 
     async function hover(locator) {
-      await locator.waitFor({ state: 'visible' });
+      await locator.scrollIntoViewIfNeeded();
       const box = await locator.boundingBox();
       await glide(box.x + box.width / 2, box.y + box.height / 2);
     }

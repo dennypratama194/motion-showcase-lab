@@ -4,9 +4,9 @@ import { useRef, useState } from 'react';
 import { ArrowDown, ArrowUpRight, ChevronDown } from 'lucide-react';
 
 const classes = [
-  { name: 'Reformer', level: 'All levels', format: 'Small group', duration: '50 min', summary: 'Spring-assisted movement for balanced strength and control.', detail: 'The reformer’s springs offer both support and resistance. Classes progress at a steady pace, with time to adjust the equipment and find a version of each exercise that suits you.' },
-  { name: 'Mat Pilates', level: 'All levels', format: 'Small group', duration: '45 min', summary: 'A grounded practice built around breath, alignment, and flow.', detail: 'With a mat and a few small props, we work through a sequence of slow, deliberate movements. The instructor offers variations throughout the class.' },
-  { name: 'Private Sessions', level: 'Tailored to you', format: 'One to one', duration: '55 min', summary: 'A personal session shaped around your pace and goals.', detail: 'You and your instructor decide where to focus, whether that’s learning the fundamentals or spending more time with a particular movement. Sessions can include both mat and reformer work.' },
+  { name: 'Reformer', image: 'reformer', level: 'All levels', format: 'Small group', duration: '50 min', summary: 'Spring-assisted movement for balanced strength and control.', detail: 'The reformer’s springs offer both support and resistance. Classes progress at a steady pace, with time to adjust the equipment and find a version of each exercise that suits you.' },
+  { name: 'Mat Pilates', image: 'mat', level: 'All levels', format: 'Small group', duration: '45 min', summary: 'A grounded practice built around breath, alignment, and flow.', detail: 'With a mat and a few small props, we work through a sequence of slow, deliberate movements. The instructor offers variations throughout the class.' },
+  { name: 'Private Sessions', image: 'private', level: 'Tailored to you', format: 'One to one', duration: '55 min', summary: 'A personal session shaped around your pace and goals.', detail: 'You and your instructor decide where to focus, whether that’s learning the fundamentals or spending more time with a particular movement. Sessions can include both mat and reformer work.' },
 ];
 
 const questions = [
@@ -40,20 +40,20 @@ export default function Home() {
         <div className="shell header-inner">
           <a className="wordmark" href="#top" aria-label="Serein home">Serein<span>.</span></a>
           <nav aria-label="Main navigation">
-            <a href="#method">The method</a>
             <a href="#classes">Classes</a>
             <a href="#studio">Studio</a>
+            <a href="#visit">First visit</a>
           </nav>
           <a className="header-action" href="#classes">Find a class <ArrowUpRight size={14} aria-hidden="true" /></a>
         </div>
       </header>
 
       <main id="main">
-        <section className="hero" id="method" aria-labelledby="hero-title">
+        <section className="hero" aria-labelledby="hero-title">
           <div className="hero-content">
             <p className="eyebrow hero-reveal"><span /> The Pilates Studio</p>
-            <h1 className="hero-reveal" id="hero-title">Move with<br /><em>intention.</em></h1>
-            <p className="hero-intro hero-reveal">Reformer, mat, and private Pilates in a studio designed for unhurried movement.</p>
+            <h1 className="hero-reveal" id="hero-title">Pilates at<br /><em>your pace.</em></h1>
+            <p className="hero-intro hero-reveal">Small-group reformer and mat classes, with private sessions for one-to-one guidance.</p>
             <a className="primary-action hero-reveal" href="#classes">Explore the classes <ArrowUpRight size={16} aria-hidden="true" /></a>
           </div>
           <div className="hero-visual">
@@ -61,20 +61,16 @@ export default function Home() {
           </div>
         </section>
 
-        <div className="shell hero-foot">
-          <p>Reformer <span /> Mat <span /> Private</p>
-          <a href="#classes">Discover the practice <ArrowDown size={14} aria-hidden="true" /></a>
-        </div>
-
         <section className="shell classes" id="classes" aria-labelledby="classes-title">
           <div className="section-heading">
-            <p className="eyebrow">The practice</p>
-            <h2 id="classes-title">Find your <em>rhythm.</em></h2>
+            <h2 id="classes-title">The classes.</h2>
+            <p>45–55 minute classes in small groups or one to one.</p>
           </div>
           <div className="class-tabs" role="tablist" aria-label="Pilates classes" ref={tabList}>
             {classes.map((service, index) => (
               <button type="button" role="tab" key={service.name} id={`class-tab-${index}`} aria-selected={selected === index} aria-controls="class-detail" tabIndex={selected === index ? 0 : -1} onClick={() => setSelected(index)} onKeyDown={(event) => moveTab(event, index)}>
-                <span>{service.name}</span>
+                <span className="class-photo"><img src={`/serein/${service.image}.webp`} alt="" loading="lazy" /></span>
+                <span className="class-name">{service.name}</span>
                 <ArrowUpRight size={17} aria-hidden="true" />
                 <span className="tab-summary">{service.summary}</span>
               </button>
@@ -91,7 +87,7 @@ export default function Home() {
           <div className="studio-visual"><img src="/serein/studio.webp" alt="Oak reformers lined up beneath the arches of the studio" loading="lazy" /></div>
           <div className="studio-content">
             <p className="eyebrow">Inside Serein</p>
-            <h2 id="studio-title">Room to<br /><em>slow down.</em></h2>
+            <h2 id="studio-title">The studio.</h2>
             <p>Our small classes give instructors time to offer individual guidance. You’ll have room to learn the equipment, ask questions, and move at a pace that works for you.</p>
             <a href="#visit">Your first visit <ArrowUpRight size={15} aria-hidden="true" /></a>
           </div>

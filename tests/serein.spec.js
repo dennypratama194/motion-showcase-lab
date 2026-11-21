@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 test('shows the hero and switches between all three classes', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: 'Move with intention.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Pilates at your pace.' })).toBeVisible();
   await expect.poll(() => page.locator('.hero-visual img').evaluate((image) => image.naturalWidth)).toBeGreaterThan(0);
   await page.getByRole('link', { name: 'Explore the classes' }).click();
   await expect(page).toHaveURL(/#classes$/);
