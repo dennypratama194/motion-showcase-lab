@@ -164,7 +164,7 @@ export default function Home() {
             <img className="hero-image" src={active.image} alt={active.alt} fetchPriority="high" />
           </div>
           <div className="frame hero-heading">
-            <p className="eyebrow micro intro-detail"><span className="marker" /> Selected Works</p>
+            <p className="micro eyebrow intro-detail">Selected Works</p>
             <h1 aria-label="Architecture in its quietest form.">
               <span className="headline-line" aria-hidden="true">{words.slice(0, 2).map((word) => <span className="word-mask" key={word}><span className="hero-word">{word}</span></span>)}</span>
               <span className="headline-line" aria-hidden="true">{words.slice(2).map((word) => <span className="word-mask" key={word}><span className={`hero-word ${word === 'quietest' ? 'italic-word' : ''}`}>{word}</span></span>)}</span>
