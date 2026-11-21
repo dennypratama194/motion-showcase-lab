@@ -55,7 +55,7 @@ h1 { margin: 16px 0 0; font: 400 clamp(50px, 7.85vw, 113px)/.9 var(--font-displa
 .caption-arrows button { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid #ffffff80; transition: background .2s, color .2s; }
 .site-header { --header-height: 80px; }
 .menu-backdrop { position: absolute; inset: 100% 0 auto; height: calc(100dvh - var(--header-height)); background: #19140f0d; opacity: 0; }
-.project-index { position: absolute; inset: calc(100% + 8px) 0 auto; width: min(calc(100% - 2 * var(--frame)), 720px); max-height: calc(100dvh - var(--header-height) - 16px); overflow: auto; overscroll-behavior: contain; background: #27251f; color: var(--paper); border: 1px solid #ffffff24; border-radius: 8px; box-shadow: 0 12px 28px #19140f45; opacity: 0; transform: translateY(-6px); }
+.project-index { position: absolute; inset: calc(100% + 8px) 0 auto; width: min(calc(100% - 2 * var(--frame)), 720px); max-height: calc(100dvh - var(--header-height) - 16px); overflow: auto; overscroll-behavior: contain; background: #27251f; color: var(--paper); border-radius: 14px; box-shadow: 0 12px 28px #19140f45; opacity: 0; transform: translateY(-6px); }
 @supports (backdrop-filter: blur(12px)) {
   .project-index {
     background: rgb(31 26 21 / .72);
@@ -65,13 +65,12 @@ h1 { margin: 16px 0 0; font: 400 clamp(50px, 7.85vw, 113px)/.9 var(--font-displa
 .project-index :focus-visible { outline-color: var(--paper); outline-offset: -3px; }
 .index-grid { grid-template-columns: minmax(0, 4.4fr) minmax(0, 5.6fr); gap: 10px; padding: 10px; align-items: stretch; }
 .index-list { min-width: 0; align-self: center; }
-.project-option { width: 100%; min-height: 60px; border-top: 1px solid #ffffff21; display: grid; align-content: center; text-align: left; padding: 8px 12px; gap: 3px; color: #f3ede0; transition: background .14s, color .14s; }
-.project-option-name { font: 400 25px/1 var(--font-display); letter-spacing: -.01em; }
-.project-option-summary { font: 400 13px/1.3 var(--font-body); color: #e0d7c8; }
-.project-option[data-active=true] { background: #ffffff12; color: #fff9ef; border-radius: 3px; }
-.project-option:last-of-type { border-bottom: 1px solid #ffffff21; }
+.project-option { width: 100%; min-height: 60px; border-radius: 11px; display: grid; align-content: center; text-align: left; padding: 8px 12px; gap: 3px; color: #f3ede0; transition: background .14s, color .14s; }
+.project-option-name { font: 550 14px/1.25 var(--font-body); }
+.project-option-summary { font: 400 13px/1.3 var(--font-body); color: #d1c7b8; }
+.project-option[data-active=true] { background: rgb(255 245 230 / .09); color: #fff9ef; }
 .index-preview { margin: 0; min-width: 0; }
-.preview-crop { position: relative; aspect-ratio: 1.75; overflow: hidden; border-radius: 4px; background: #423e35; }
+.preview-crop { position: relative; aspect-ratio: 1.75; overflow: hidden; border-radius: 10px; background: #423e35; }
 .preview-crop img { position: absolute; inset: 0; opacity: 0; transition: opacity .18s ease-out; }
 .preview-crop img[data-active=true] { opacity: 1; }
 .index-preview figcaption { margin-top: 10px; color: #d2c8b7; }
@@ -101,7 +100,6 @@ h1 { margin: 16px 0 0; font: 400 clamp(50px, 7.85vw, 113px)/.9 var(--font-displa
   .site-header { --header-height: 64px; }
   .index-grid { grid-template-columns: minmax(0, 1fr); gap: 12px; padding: 12px; }
   .project-option { min-height: 52px; padding: 6px 9px; }
-  .project-option-name { font-size: 23px; }
   .preview-crop { aspect-ratio: 1.85; }
   .index-preview figcaption { font-size: 10px; gap: 8px; }
   .detail-section { display: block; }
