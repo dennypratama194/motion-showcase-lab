@@ -6,6 +6,19 @@ test('reveals the hero, previews a project on hover and closes the index', async
   await page.goto('/');
   const heading = page.getByRole('heading', { name: 'Architecture in its quietest form.' });
   await expect(heading).toBeVisible();
+  const { curtainEnd, textStarts } = await page.evaluate(() => {
+    const toMilliseconds = (time) => Number.parseFloat(time) * (time.endsWith('ms') ? 1 : 1000);
+    const curtainEnd = Math.max(...Array.from(document.querySelectorAll('.hero-mask, .hero-image'), (element) => {
+      const style = getComputedStyle(element);
+      return toMilliseconds(style.animationDelay) + toMilliseconds(style.animationDuration);
+    }));
+    const textStarts = Array.from(document.querySelectorAll('.intro-detail, .hero-word, .hero-caption'),
+      (element) => toMilliseconds(getComputedStyle(element).animationDelay));
+    return { curtainEnd, textStarts };
+  });
+  expect(curtainEnd).toBeGreaterThan(0);
+  expect(textStarts).toHaveLength(7);
+  expect(Math.min(...textStarts)).toBeGreaterThan(curtainEnd);
   await expect.poll(() => page.locator('.hero-mask').evaluate((element) => getComputedStyle(element).clipPath)).toBe('none');
   const hero = page.getByRole('region', { name: 'Featured project' });
   await expect.poll(() => hero.getByRole('img').evaluate((image) => image.naturalWidth)).toBeGreaterThan(0);
