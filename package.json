@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start --hostname 0.0.0.0",
     "test": "playwright test",
+    "review:static": "node scripts/static-review.mjs",
     "capture": "node scripts/capture.mjs"
   },
   "dependencies": {
